@@ -29,6 +29,7 @@ A Python script that generates fake user data and writes it to a CSV file.
 2. Install the required libraries: `pip install faker`
 3. Run the script: `python3 fakedata.py`
 4. Specify the number of users you want to generate data for (e.g., `python generate_user_data.py 100`)
+5. For GUI run `demo2.py`
 
 ## Code Explanation
 
