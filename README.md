@@ -43,6 +43,10 @@ The script generates a CSV file named `user_data.csv` with the following columns
 | ---| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Each row represents a user, with fake data generated for each column.
+![Screenshot from 2024-09-03 14-25-14](https://github.com/user-attachments/assets/67c6ece8-8fc7-4fe5-833d-8f6482948aee)
+
+![image](https://github.com/user-attachments/assets/58010564-d92b-41b6-9b06-30e107860ff9)
+
 
 ## License
 
