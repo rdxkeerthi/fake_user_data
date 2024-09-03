@@ -1,59 +1,108 @@
-from flask import Flask, request, jsonify, render_template_string
+import tkinter as tk
+from tkinter import filedialog
 from faker import Faker
 from faker.providers import internet
 import csv
 
-app = Flask(__name__)
+class UserDataGenerator:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("User Data Generator")
 
-fake = Faker()
-fake.add_provider(internet)
+        # Create input field for number of users
+        self.num_users_label = tk.Label(root, text="Number of users:")
+        self.num_users_label.pack()
+        self.num_users_entry = tk.Entry(root)
+        self.num_users_entry.pack()
 
-@app.route('/', methods=['GET'])
-def index():
-    return open('index.html', 'r').read()
+        # Create button to generate user data
+        self.generate_button = tk.Button(root, text="Generate User Data", command=self.generate_user_data)
+        self.generate_button.pack()
 
-@app.route('/generate_data', methods=['POST'])
-def generate_data():
-    num_users = int(request.json['numUsers'])
-    user_data = generate_user_data(num_users)
-    html_table = generate_html_table(user_data)
-    return html_table
+        # Create label to display status
+        self.status_label = tk.Label(root, text="")
+        self.status_label.pack()
 
-def generate_user_data(num_users):
-    user_data = []
-    for _ in range(num_users):
-        user = {
-            'Name': fake.name(),
-            'Email': fake.free_email(),
-            'Phone Number': fake.phone_number(),
-            'Birthdate': fake.date_of_birth(),
-            'Address': fake.address(),
-            'City': fake.city(),
-            'Country': fake.country(),
-            'ZIP Code': fake.zipcode(),
-            'Job Title': fake.job(),
-            'Company': fake.company(),
-            'IP Address': fake.ipv4_private(),
-            'Credit Card Number': fake.credit_card_number(),
-            'Username': fake.user_name(),
-            'Website': fake.url(),
-            'SSN': fake.ssn()
-        }
-        user_data.append(user)
-    return user_data
+        # Create text widget to display output
+        self.output_text = tk.Text(root, width=60, height=10)
+        self.output_text.pack()
 
-def generate_html_table(user_data):
-    html_table = '<table><tr>'
-    for key in user_data[0].keys():
-        html_table += f'<th>{key}</th>'
-    html_table += '</tr>'
-    for user in user_data:
-        html_table += '<tr>'
-        for value in user.values():
-            html_table += f'<td>{value}</td>'
-        html_table += '</tr>'
-    html_table += '</table>'
-    return html_table
+    def generate_user_data(self):
+        # Get number of users from input field
+        num_users = int(self.num_users_entry.get())
 
-if __name__ == '__main__':
-    app.run(debug=True)
+        # Generate user data
+        fake = Faker()
+        fake.add_provider(internet)
+        user_data = []
+        for _ in range(num_users):
+            user = {
+                'Name': fake.name(),
+                'Email': fake.free_email(),
+                'Phone Number': fake.phone_number(),
+                'Birthdate': fake.date_of_birth(),
+                'Address': fake.address(),
+                'City': fake.city(),
+                'Country': fake.country(),
+                'ZIP Code': fake.zipcode(),
+                'Job Title': fake.job(),
+                'Company': fake.company(),
+                'IP Address': fake.ipv4_private(),
+                'Credit Card Number': fake.credit_card_number(),
+                'Username': fake.user_name(),
+                'Website': fake.url(),
+                'SSN': fake.ssn()
+            }
+            user_data.append(user)
+
+        # Display user data in text widget
+        self.output_text.delete(1.0, tk.END)
+        for user in user_data:
+            self.output_text.insert(tk.END, f"Name: {user['Name']}\n")
+            self.output_text.insert(tk.END, f"Email: {user['Email']}\n")
+            self.output_text.insert(tk.END, f"Phone Number: {user['Phone Number']}\n")
+            self.output_text.insert(tk.END, f"Birthdate: {user['Birthdate']}\n")
+            self.output_text.insert(tk.END, f"Address: {user['Address']}\n")
+            self.output_text.insert(tk.END, f"City: {user['City']}\n")
+            self.output_text.insert(tk.END, f"Country: {user['Country']}\n")
+            self.output_text.insert(tk.END, f"ZIP Code: {user['ZIP Code']}\n")
+            self.output_text.insert(tk.END, f"Job Title: {user['Job Title']}\n")
+            self.output_text.insert(tk.END, f"Company: {user['Company']}\n")
+            self.output_text.insert(tk.END, f"IP Address: {user['IP Address']}\n")
+            self.output_text.insert(tk.END, f"Credit Card Number: {user['Credit Card Number']}\n")
+            self.output_text.insert(tk.END, f"Username: {user['Username']}\n")
+            self.output_text.insert(tk.END, f"Website: {user['Website']}\n")
+            self.output_text.insert(tk.END, f"SSN: {user['SSN']}\n\n")
+
+        # Save user data to CSV file
+        file_path = filedialog.asksaveasfilename(defaultextension=".csv")
+        with open(file_path, 'w', newline='') as csvfile:
+            fieldnames = [
+                "Name",
+                "Email",
+                "Phone Number",
+                "Birthdate",
+                "Address",
+                "City",
+                "Country",
+                "ZIP Code",
+                "Job Title",
+                "Company",
+                "IP Address",
+                "Credit Card Number",
+                "Username",
+                "Website",
+                "SSN"
+            ]
+
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(user_data)
+
+        # Update status label
+        self.status_label.config(text=f"User data generated and saved to {file_path}")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = UserDataGenerator(root)
+    root.mainloop()
